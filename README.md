@@ -74,10 +74,10 @@ public void before(JoinPoint joinPoint) {
 }
 ```
 
-Making a `GET` request to the `/employees/v1/{id}` endpoint will trigger the `before` advice and log the method name and its arguments as shown below.
+Example of the message logged when this advice is triggered:
 
 ```
-2024-06-12T17:42:51.300+01:00  INFO 85990 --- [spring-boot-template] [nio-8080-exec-2] c.e.springbootaop.aspect.LoggingAspect   : Executing method: EmployeeService.getEmployeeById(..) with arguments: [1]
+2024-06-12T17:42:51.300+01:00  INFO 85990 --- [spring-boot-aop] [nio-8080-exec-2] c.e.springbootaop.aspect.LoggingAspect   : Executing method: EmployeeService.getEmployeeById(..) with arguments: [1]
 ```
 
 ### @After
@@ -85,17 +85,22 @@ Making a `GET` request to the `/employees/v1/{id}` endpoint will trigger the `be
 This advice is executed after the method execution. It’s similar to the `@AfterReturning` advice, but it runs regardless of the method outcome.
 It’s useful for tasks like cleaning up resources or finalizing operations.
 
-In this project, the `@After` advice is used to log the message `HAPPY BIRTHDAY` after the method execution if the `joinedOn` date is the same as the current date. 
+In this project, the `@After` advice is used to log the method name after the method execution.
 
-The pointcut of this advice targets the methods `saveEmployee` and `updateEmployee` in the `com.example.springaop.service.EmployeeService` class.
+The pointcut of this advice targets all the methods called, with zero or more arguments, from the `com.example.springaop.service` package and its subpackages.
 
 ```java
-@After("execution(* com.example.springaop.service.*.*(..)) && args(joinedOn,..)")
-public void after(JoinPoint joinPoint, LocalDate joinedOn) {
-    if (joinedOn.equals(LocalDate.now())) {
-        logger.info("HAPPY BIRTHDAY!");
-    }
+@After("execution(* com.example.springbootaop.service.*.*(..))")
+public void after(JoinPoint joinPoint) {
+    String methodName = joinPoint.getSignature().toShortString();
+    logger.info("Method executed: " + methodName);
 }
+```
+
+Example of the message logged when this advice is triggered: 
+
+```
+2024-06-12T18:17:16.364+01:00  INFO 22937 --- [spring-boot-aop] [nio-8080-exec-1] c.e.springbootaop.aspect.LoggingAspect   : Method executed: EmployeeService.getEmployeeById(..)
 ```
 
 ### @AfterReturning
@@ -103,9 +108,18 @@ public void after(JoinPoint joinPoint, LocalDate joinedOn) {
 This advice is executed after the method execution. 
 It’s useful for tasks like cleaning up resources or finalizing operations.
 
-In this project, the `@AfterReturning` advice is used to log the method name after the method execution.
+In this project, the `@AfterReturning` advice is used to log the message `HAPPY BIRTHDAY` after the method execution if the `joinedOn` date is the same as the current date.
 
-The pointcut of this advice targets the `com.example.springaop.service` package methods.
+The pointcut of this advice targets the methods `saveEmployee` and `updateEmployee` in the `com.example.springaop.service.EmployeeService` class.
+
+```java
+@After("execution(* com.example.springbootaop.service.*.*(..)) && args(joinedOn,..)")
+public void after(JoinPoint joinPoint, LocalDate joinedOn) {
+    if (joinedOn.equals(LocalDate.now())) {
+        logger.info("HAPPY BIRTHDAY!");
+    }
+}
+```
 
 // ADD CODE HERE
 
