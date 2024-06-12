@@ -1,6 +1,6 @@
-package com.example.springboottemplate.repository;
+package com.example.springbootaop.repository;
 
-import com.example.springboottemplate.entity.Employee;
+import com.example.springbootaop.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

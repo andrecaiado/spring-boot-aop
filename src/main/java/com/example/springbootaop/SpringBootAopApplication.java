@@ -1,13 +1,13 @@
-package com.example.springboottemplate;
+package com.example.springbootaop;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringBootTemplateApplication {
+public class SpringBootAopApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SpringBootTemplateApplication.class, args);
+		SpringApplication.run(SpringBootAopApplication.class, args);
 	}
 
 }
