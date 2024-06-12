@@ -108,20 +108,25 @@ Example of the message logged when this advice is triggered:
 This advice is executed after the method execution. 
 It’s useful for tasks like cleaning up resources or finalizing operations.
 
-In this project, the `@AfterReturning` advice is used to log the message `HAPPY BIRTHDAY` after the method execution if the `joinedOn` date is the same as the current date.
+In this project, the `@AfterReturning` advice will log the message `HAPPY COMPANY ANNIVERSARY`, after the method execution, if the `joinedOn` date day and month are the same as the current date day and month.
 
-The pointcut of this advice targets the methods `saveEmployee` and `updateEmployee` in the `com.example.springaop.service.EmployeeService` class.
+The pointcut of this advice targets the methods `saveEmployee` and `updateEmployee` from the `com.example.springaop.service.EmployeeService` class.
 
 ```java
-@After("execution(* com.example.springbootaop.service.*.*(..)) && args(joinedOn,..)")
-public void after(JoinPoint joinPoint, LocalDate joinedOn) {
-    if (joinedOn.equals(LocalDate.now())) {
-        logger.info("HAPPY BIRTHDAY!");
+@AfterReturning(pointcut = "execution(* com.example.springbootaop.service.EmployeeService.saveEmployee(..))", returning = "employee")
+public void afterReturningSaveEmployee(JoinPoint joinPoint, Employee employee) {
+    LocalDate today = LocalDate.now();
+    if (employee.getJoinedOn().getMonth() == today.getMonth() && employee.getJoinedOn().getDayOfMonth() == today.getDayOfMonth()) {
+        logger.info("HAPPY BIRTHDAY " + employee.getName());
     }
 }
 ```
 
-// ADD CODE HERE
+Example of the message logged when this advice is triggered:
+
+```
+2024-06-12T18:32:31.330+01:00  INFO 39304 --- [spring-boot-aop] [nio-8080-exec-1] c.e.springbootaop.aspect.LoggingAspect   : HAPPY COMPANY ANNIVERSARY André Caiado!!!
+```
 
 ### @AfterThrowing
 

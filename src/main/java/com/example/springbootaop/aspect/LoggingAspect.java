@@ -1,5 +1,6 @@
 package com.example.springbootaop.aspect;
 
+import com.example.springbootaop.entity.Employee;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -29,11 +30,12 @@ public class LoggingAspect {
         log.info("Method executed: " + methodName);
     }
 
-    /*@AfterReturning("execution(* com.example.springbootaop.service.EmployeeService.saveEmployee(..)) || execution(* com.example.springbootaop.service.EmployeeService.updateEmployee(..))")
-    public void after(JoinPoint joinPoint, LocalDate joinedOn) {
-        if (joinedOn.equals(LocalDate.now())) {
-            log.info("HAPPY BIRTHDAY!");
+    @AfterReturning(pointcut = "execution(* com.example.springbootaop.service.EmployeeService.saveEmployee(..)) || execution(* com.example.springbootaop.service.EmployeeService.updateEmployee(..))", returning = "employee")
+    public void afterReturningSaveEmployee(JoinPoint joinPoint, Employee employee) {
+        LocalDate today = LocalDate.now();
+        if (employee.getJoinedOn().getMonth() == today.getMonth() && employee.getJoinedOn().getDayOfMonth() == today.getDayOfMonth()) {
+            log.info("HAPPY COMPANY ANNIVERSARY " + employee.getFirstName() + " " + employee.getLastName() + "!!!");
         }
-    }*/
+    }
 
 }
