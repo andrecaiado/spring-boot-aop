@@ -66,11 +66,11 @@ In this project, the `@Before` advice is used to log the method name and its arg
 The pointcut of this advice targets all the methods called, with zero or more arguments, from the `com.example.springaop.service` package and its subpackages. 
 
 ```java
-@Before("execution(* com.example.springaop.service.*.*(..))")
-public void before(JoinPoint joinPoint) {
+@Before("execution(* com.example.springbootaop.service.*.*(..))")
+public void logBefore(JoinPoint joinPoint) {
     String methodName = joinPoint.getSignature().toShortString();
     String args = Arrays.toString(joinPoint.getArgs());
-    logger.info("Executing method: " + methodName + " with arguments: " + args);
+    log.info("Executing method: " + methodName + " with arguments: " + args);
 }
 ```
 
@@ -93,7 +93,7 @@ The pointcut of this advice targets all the methods called, with zero or more ar
 @After("execution(* com.example.springbootaop.service.*.*(..))")
 public void after(JoinPoint joinPoint) {
     String methodName = joinPoint.getSignature().toShortString();
-    logger.info("Method executed: " + methodName);
+    log.info("Method executed: " + methodName);
 }
 ```
 
@@ -113,11 +113,11 @@ In this project, the `@AfterReturning` advice will log the message `HAPPY COMPAN
 The pointcut of this advice targets the methods `saveEmployee` and `updateEmployee` from the `com.example.springaop.service.EmployeeService` class.
 
 ```java
-@AfterReturning(pointcut = "execution(* com.example.springbootaop.service.EmployeeService.saveEmployee(..))", returning = "employee")
+@AfterReturning(pointcut = "execution(* com.example.springbootaop.service.EmployeeService.saveEmployee(..)) || execution(* com.example.springbootaop.service.EmployeeService.updateEmployee(..))", returning = "employee")
 public void afterReturningSaveEmployee(JoinPoint joinPoint, Employee employee) {
     LocalDate today = LocalDate.now();
     if (employee.getJoinedOn().getMonth() == today.getMonth() && employee.getJoinedOn().getDayOfMonth() == today.getDayOfMonth()) {
-        logger.info("HAPPY BIRTHDAY " + employee.getName());
+        log.info("HAPPY COMPANY ANNIVERSARY " + employee.getFirstName() + " " + employee.getLastName() + "!!!");
     }
 }
 ```
