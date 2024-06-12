@@ -4,7 +4,7 @@ This is a Spring Boot application that demonstrates how to use Aspect-Oriented P
 
 ## Contents
 - [Dependency](#dependency)
-- [Aspects](#aspects)
+- [Aspect](#aspect)
 - [Advices implemented](#advices-implemented)
   - [@Before](#before)
   - [@After](#after)
@@ -25,31 +25,45 @@ To use Spring AOP in our Spring Boot application, the `spring-boot-starter-aop` 
 </dependencies>
 ```
 
-## Aspects
+## Aspect
 
-Aspects are usually describe as being a cross-cutting concerns in our application, e.g., logging, transaction management and security. Since this is a demo project with a small scope and a low complexity, there aren't many cross-cutting concerns to implement aspects, thus,  we will focus on the logging concern.
+Aspects are usually describe as being a module that encapsulates specific cross-cutting concerns in our application, e.g., logging, transaction management and security. 
+
+Since this is a demo project with a small scope and a low complexity, there aren't many cross-cutting concerns to implement aspects, thus, we will focus on the logging concern and create a logging aspect.
+
+The logging aspect is created by creating a class annotated with `@Aspect` and `@Component`. The `@Aspect` annotation marks the class as an aspect, and the `@Component` annotation marks the class as a Spring bean.
 
 ```java
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
-@Aspect()
+@Aspect
 @Component
 public class LoggingAspect {
     // Advices are added here
 }
 ```
 
-## Advices implemented
+To apply the aspect, AOP must be enabled in the Spring Boot application, for that, the `@EnableAspectJAutoProxy` annotation was added to the application main class.
+
+```java
+@EnableAspectJAutoProxy
+@SpringBootApplication
+public class SpringBootAopApplication {
+  // Main method
+}
+```
+
+## Advices
 
 ### @Before
 
-This advice is executed before the method execution. 
+This advice type is executed before the method execution. 
 It’s useful for tasks like logging, security, and transaction management.
 
 In this project, the `@Before` advice is used to log the method name and its arguments before the method execution.
 
-The pointcut of this advice targets the `com.example.springaop.service` package methods. 
+The pointcut of this advice targets all the methods called, with zero or more arguments, from the `com.example.springaop.service` package and its subpackages. 
 
 ```java
 @Before("execution(* com.example.springaop.service.*.*(..))")
@@ -58,6 +72,12 @@ public void before(JoinPoint joinPoint) {
     String args = Arrays.toString(joinPoint.getArgs());
     logger.info("Executing method: " + methodName + " with arguments: " + args);
 }
+```
+
+Making a `GET` request to the `/employees/v1/{id}` endpoint will trigger the `before` advice and log the method name and its arguments as shown below.
+
+```
+2024-06-12T17:42:51.300+01:00  INFO 85990 --- [spring-boot-template] [nio-8080-exec-2] c.e.springbootaop.aspect.LoggingAspect   : Executing method: EmployeeService.getEmployeeById(..) with arguments: [1]
 ```
 
 ### @After
