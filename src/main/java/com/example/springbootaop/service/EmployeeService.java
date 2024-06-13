@@ -37,6 +37,10 @@ public class EmployeeService {
         employee.setUpdatedAt(LocalDateTime.now());
         Employee savedEmployee = employeeRepository.save(employee);
 
+        if (employee.getFirstName().equals("John") && employee.getLastName().equals("Doe")) {
+            throw new RuntimeException("Invalid employee name");
+        }
+
         log.info("Employee with id: {} saved successfully", employee.getId());
         return savedEmployee;
     }

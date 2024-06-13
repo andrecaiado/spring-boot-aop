@@ -133,16 +133,22 @@ Example of the message logged when this advice is triggered:
 This advice is executed if the method throws an exception. 
 It’s useful for tasks like logging, sending notifications, and handling exceptions.
 
-In this project, the `@AfterThrowing` advice is used to log the object details if an exception occurs when saving an employee. 
+In this project, the `@AfterThrowing` advice is used to log the object details if an exception occurs when saving or updating an employee. To test this advice, a condition was added to the [EmployeeService](src%2Fmain%2Fjava%2Fcom%2Fexample%2Fspringbootaop%2Fservice%2FEmployeeService.java#L40) to throw an exception if the employee's first name is John and the last name is Doe. 
 
 The pointcut of this advice targets the methods `saveEmployee` and `updateEmployee` in the `com.example.springaop.service.EmployeeService` class.
 
 ```java
-@AfterThrowing(pointcut = "execution(* com.example.springaop.*.*(..))", throwing = "exception")
+@AfterThrowing(pointcut = "execution(* com.example.springbootaop.service.EmployeeService.saveEmployee(..)) || execution(* com.example.springbootaop.service.EmployeeService.updateEmployee(..))", throwing = "exception")
 public void afterThrowing(JoinPoint joinPoint, Throwable exception) {
     String methodName = joinPoint.getSignature().toShortString();
-    logger.error("Exception thrown by " + methodName + ": " + exception.getMessage());
-}
+    log.error("Exception thrown by " + methodName + ": " + exception.getMessage());
+    }
+```
+
+Example of the message logged when this advice is triggered:
+
+```
+2024-06-13T16:43:28.639+01:00 ERROR 99736 --- [spring-boot-aop] [nio-8080-exec-1] c.e.springbootaop.aspect.LoggingAspect   : Exception thrown by EmployeeService.saveEmployee(..): Invalid employee name
 ```
 
 ### @Around

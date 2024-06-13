@@ -3,10 +3,7 @@ package com.example.springbootaop.aspect;
 import com.example.springbootaop.entity.Employee;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -36,6 +33,13 @@ public class LoggingAspect {
         if (employee.getJoinedOn().getMonth() == today.getMonth() && employee.getJoinedOn().getDayOfMonth() == today.getDayOfMonth()) {
             log.info("HAPPY COMPANY ANNIVERSARY " + employee.getFirstName() + " " + employee.getLastName() + "!!!");
         }
+    }
+
+
+    @AfterThrowing(pointcut = "execution(* com.example.springbootaop.service.EmployeeService.saveEmployee(..)) || execution(* com.example.springbootaop.service.EmployeeService.updateEmployee(..))", throwing = "exception")
+    public void afterThrowing(JoinPoint joinPoint, Throwable exception) {
+        String methodName = joinPoint.getSignature().toShortString();
+        log.error("Exception thrown by " + methodName + ": " + exception.getMessage());
     }
 
 }
