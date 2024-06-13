@@ -27,7 +27,7 @@ To use Spring AOP in our Spring Boot application, the `spring-boot-starter-aop` 
 
 ## Aspect
 
-Aspects are usually describe as being a module that encapsulates specific cross-cutting concerns in our application, e.g., logging, transaction management and security. 
+Aspects are usually describe as being a module that encapsulates specific cross-cutting concerns in our application, e.g., logging, transaction management, security and others. 
 
 Since this is a demo project with a small scope and a low complexity, there aren't many cross-cutting concerns to implement aspects, thus, we will focus on the logging concern and create a logging aspect.
 
