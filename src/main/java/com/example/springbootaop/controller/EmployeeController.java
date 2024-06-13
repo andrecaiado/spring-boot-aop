@@ -1,5 +1,6 @@
 package com.example.springbootaop.controller;
 
+import com.example.springbootaop.aspect.LogExecutionTime;
 import com.example.springbootaop.entity.Employee;
 import com.example.springbootaop.service.EmployeeService;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ public class EmployeeController {
      * Purpose: Fetches all the employees in the employee table
      * @return List of Employees
      */
+    @LogExecutionTime
     @GetMapping("/")
     public ResponseEntity<List<Employee>> getAllEmployees(){
         return ResponseEntity.ok().body(employeeService.getAllEmployees());

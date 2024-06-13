@@ -67,7 +67,7 @@ The pointcut of this advice targets all the methods called, with zero or more ar
 
 ```java
 @Before("execution(* com.example.springbootaop.service.*.*(..))")
-public void logBefore(JoinPoint joinPoint) {
+public void logBeforeService(JoinPoint joinPoint) {
     String methodName = joinPoint.getSignature().toShortString();
     String args = Arrays.toString(joinPoint.getArgs());
     log.info("Executing method: " + methodName + " with arguments: " + args);
@@ -91,7 +91,7 @@ The pointcut of this advice targets all the methods called, with zero or more ar
 
 ```java
 @After("execution(* com.example.springbootaop.service.*.*(..))")
-public void after(JoinPoint joinPoint) {
+public void logAfterService(JoinPoint joinPoint) {
     String methodName = joinPoint.getSignature().toShortString();
     log.info("Method executed: " + methodName);
 }
@@ -160,24 +160,52 @@ For this advice type, we implemented two advices:
 
 1. An advice to display a message before and after the method execution.
 
-```java
-import org.aspectj.lang.annotation.Around;
-
-@Around()
-
-```
-
-2. An advice to measure the execution time of a method. For this purpose we will create a custom AOP annotation `@TrackTime`.
+The pointcut of this advice targets all the methods called from the `com.example.springaop.controller` package and its subpackages.
 
 ```java
-@Around("@annotation(com.example.springaop.aspect.TrackTime)")
-public Object trackTime(ProceedingJoinPoint joinPoint) throws Throwable {
-    long startTime = System.currentTimeMillis();
+@Around(value = "execution(* com.example.springbootaop.controller.*.*(..))")
+public Object logAroundController(ProceedingJoinPoint joinPoint) throws Throwable {
+    String methodName = joinPoint.getSignature().toShortString();
+    log.info("Controller called: " + methodName);
     Object result = joinPoint.proceed();
-    long timeTaken = System.currentTimeMillis() - startTime;
-    logger.info("Time taken by " + joinPoint.getSignature().toShortString() + " is " + timeTaken + "ms");
+    log.info("Controller executed: " + methodName);
     return result;
 }
 ```
 
-The pointcut of both advices targets the methods in the `com.example.springaop.controller` package.
+Example of the message logged when this advice is triggered:
+
+```
+2024-06-13T17:26:06.729+01:00  INFO 58075 --- [spring-boot-aop] [nio-8080-exec-2] c.e.springbootaop.aspect.LoggingAspect   : Controller called: EmployeeController.saveEmployee(..)
+2024-06-13T17:26:06.820+01:00  INFO 58075 --- [spring-boot-aop] [nio-8080-exec-2] c.e.springbootaop.aspect.LoggingAspect   : Controller executed: EmployeeController.saveEmployee(..)
+```
+
+2. An advice to measure the execution time of a method. 
+
+For this purpose we created a custom AOP annotation `@LogExecutionTime`.
+
+```java
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface LogExecutionTime {
+}
+````
+
+The pointcut of this advice targets all the methods annotated with `@LogExecutionTime`.
+
+```java
+@Around("@annotation(com.example.springbootaop.aspect.LogExecutionTime)")
+public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
+    long startTime = System.currentTimeMillis();
+    Object result = joinPoint.proceed();
+    long executionTime = System.currentTimeMillis() - startTime;
+    log.info(joinPoint.getSignature().toShortString() + " executed in " + executionTime + "ms");
+    return result;
+}
+```
+
+Example of the message logged when this advice is triggered:
+
+```
+2024-06-13T17:51:37.046+01:00  INFO 84567 --- [spring-boot-aop] [nio-8080-exec-1] c.e.springbootaop.aspect.LoggingAspect   : EmployeeController.getAllEmployees() executed in 256ms
+```

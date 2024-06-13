@@ -1,5 +1,6 @@
 package com.example.springbootaop.service;
 
+import com.example.springbootaop.aspect.LogExecutionTime;
 import com.example.springbootaop.entity.Employee;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
